@@ -1,0 +1,459 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>System Command Center - Main Dashboard</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;family=Space+Grotesk:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "on-secondary-fixed": "#001a42",
+                        "primary-container": "#4d8eff",
+                        "surface-bright": "#31394d",
+                        "secondary-fixed-dim": "#b1c6f9",
+                        "on-surface": "#dae2fd",
+                        "on-surface-variant": "#c2c6d6",
+                        "outline-variant": "#424754",
+                        "tertiary-fixed-dim": "#ffb786",
+                        "surface-container": "#171f33",
+                        "on-error-container": "#ffdad6",
+                        "secondary-container": "#304671",
+                        "on-tertiary": "#502400",
+                        "inverse-primary": "#005ac2",
+                        "error-container": "#93000a",
+                        "tertiary-container": "#df7412",
+                        "inverse-surface": "#dae2fd",
+                        "surface-tint": "#adc6ff",
+                        "surface-dim": "#0b1326",
+                        "surface-container-low": "#131b2e",
+                        "on-secondary-fixed-variant": "#304671",
+                        "outline": "#8c909f",
+                        "surface-container-lowest": "#060e20",
+                        "primary": "#adc6ff",
+                        "secondary": "#b1c6f9",
+                        "background": "#0b1326",
+                        "inverse-on-surface": "#283044",
+                        "on-primary-fixed-variant": "#004395",
+                        "primary-fixed-dim": "#adc6ff",
+                        "on-tertiary-fixed": "#311400",
+                        "tertiary": "#ffb786",
+                        "on-error": "#690005",
+                        "on-background": "#dae2fd",
+                        "secondary-fixed": "#d8e2ff",
+                        "on-primary": "#002e6a",
+                        "tertiary-fixed": "#ffdcc6",
+                        "surface-container-highest": "#2d3449",
+                        "surface-container-high": "#222a3d",
+                        "on-tertiary-fixed-variant": "#723600",
+                        "on-secondary": "#182f59",
+                        "on-tertiary-container": "#461f00",
+                        "error": "#ffb4ab",
+                        "on-primary-fixed": "#001a42",
+                        "surface": "#0b1326",
+                        "on-secondary-container": "#9fb5e7",
+                        "on-primary-container": "#00285d",
+                        "primary-fixed": "#d8e2ff",
+                        "surface-variant": "#2d3449"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.125rem",
+                        "lg": "0.25rem",
+                        "xl": "0.5rem",
+                        "full": "0.75rem"
+                    },
+                    "spacing": {},
+                    "fontFamily": {
+                        "headline": ["Space Grotesk", "sans-serif"],
+                        "body": ["Inter", "sans-serif"],
+                        "label": ["Inter", "sans-serif"],
+                        "mono": ["JetBrains Mono", "monospace"]
+                    }
+                },
+            },
+        }
+    </script>
+<style>
+        body { font-family: 'Inter', sans-serif; background-color: #0b1326; color: #dae2fd; }
+        h1, h2, h3, h4, h5, h6, .font-headline { font-family: 'Space Grotesk', sans-serif; }
+        .font-mono { font-family: 'JetBrains Mono', monospace; }
+        .material-symbols-outlined { font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24; }
+        .material-symbols-outlined.fill { font-variation-settings: 'FILL' 1; }
+        
+        /* Custom scrollbar for deep tech feel */
+        ::-webkit-scrollbar { width: 6px; height: 6px; }
+        ::-webkit-scrollbar-track { background: #060e20; }
+        ::-webkit-scrollbar-thumb { background: #222a3d; border-radius: 4px; }
+        ::-webkit-scrollbar-thumb:hover { background: #31394d; }
+    </style>
+</head>
+<body class="bg-surface text-on-surface antialiased h-screen overflow-hidden flex flex-col md:flex-row">
+<!-- JSON Component: SideNavBar (Hidden on Mobile) -->
+<nav class="hidden md:flex flex-col h-full border-r border-white/5 bg-[#0b1326] h-screen w-64 fixed left-0 top-0 border-r border-[#424754]/15">
+<div class="p-6">
+<div class="flex items-center gap-3 mb-8">
+<div class="w-10 h-10 rounded-lg bg-surface-container-high flex items-center justify-center">
+<span class="material-symbols-outlined text-primary text-xl">satellite_alt</span>
+</div>
+<div>
+<h1 class="text-xl font-black text-[#adc6ff] font-headline tracking-tight">Operator Console</h1>
+<p class="text-xs text-on-surface-variant font-label">Status: Optimal</p>
+</div>
+</div>
+<ul class="space-y-2 font-body text-sm">
+<!-- Overview: Active -->
+<li>
+<a class="flex items-center gap-3 px-4 py-3 rounded-DEFAULT bg-gradient-to-r from-[#adc6ff]/10 to-transparent text-[#adc6ff] border-l-2 border-[#adc6ff] font-medium transition-all duration-200 ease-in-out" href="#">
+<span class="material-symbols-outlined fill">dashboard</span>
+                        Overview
+                    </a>
+</li>
+<!-- Systems: Inactive -->
+<li>
+<a class="flex items-center gap-3 px-4 py-3 rounded-DEFAULT text-[#c2c6d6] opacity-70 hover:bg-[#131b2e] hover:opacity-100 transition-all duration-200 ease-in-out" href="#">
+<span class="material-symbols-outlined">dns</span>
+                        Systems
+                    </a>
+</li>
+<!-- Logs: Inactive -->
+<li>
+<a class="flex items-center gap-3 px-4 py-3 rounded-DEFAULT text-[#c2c6d6] opacity-70 hover:bg-[#131b2e] hover:opacity-100 transition-all duration-200 ease-in-out" href="#">
+<span class="material-symbols-outlined">terminal</span>
+                        Logs
+                    </a>
+</li>
+<!-- Settings: Inactive -->
+<li>
+<a class="flex items-center gap-3 px-4 py-3 rounded-DEFAULT text-[#c2c6d6] opacity-70 hover:bg-[#131b2e] hover:opacity-100 transition-all duration-200 ease-in-out" href="#">
+<span class="material-symbols-outlined">settings</span>
+                        Settings
+                    </a>
+</li>
+</ul>
+</div>
+<div class="mt-auto p-6">
+<div class="flex items-center gap-3 mb-4 p-3 bg-surface-container-low rounded-lg">
+<img alt="System Administrator" class="w-8 h-8 rounded-full border border-outline-variant/30" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDuCWdJzduRpKrLpIPmPE-kyeRoednmH5FrcwsRsniTPx_acIul5r_qiToMpFrIzkesSfiK5XEhu96L70uC3z_WBTwpfp0tNpp5pT0yJzrHnvzQSFcavXn96YNp8xC5nOrNFVFUXNCUHn_SbhMTWMKKCM0PvLJgSRD_GaYBwzklK88cqvxzZg3mRjDw4sFbwGVFoOFtDxQoN-FaLUNs1zrw8pd9UvtlNLnOK3XWBQ8dGTVz1TZZ6vTy6Vl8UcVHEqh6PLn3obyGb9A"/>
+<div class="flex-1 min-w-0">
+<p class="text-sm font-medium text-on-surface truncate">Admin</p>
+<p class="text-xs text-on-surface-variant truncate">Root Access</p>
+</div>
+</div>
+<button class="w-full flex items-center justify-center gap-2 px-4 py-2 bg-gradient-to-br from-primary to-primary-container text-on-primary rounded-lg font-medium text-sm hover:shadow-[0_0_15px_rgba(173,198,255,0.15)] transition-all">
+<span class="material-symbols-outlined text-sm">add</span>
+                Add System
+            </button>
+</div>
+</nav>
+<!-- Main Content Area -->
+<div class="flex-1 flex flex-col md:ml-64 h-full overflow-hidden bg-surface relative">
+<!-- Ambient Background Light -->
+<div class="absolute top-0 right-0 w-[500px] h-[500px] bg-primary/5 rounded-full blur-[100px] pointer-events-none -translate-y-1/2 translate-x-1/4"></div>
+<!-- JSON Component: TopNavBar -->
+<header class="flex justify-between items-center w-full px-6 py-3 h-16 bg-[#0b1326]/80 backdrop-blur-xl border-b border-[#131b2e] sticky top-0 z-50">
+<div class="flex items-center gap-4">
+<h2 class="text-lg font-bold text-[#adc6ff] font-['Space_Grotesk'] tracking-tight">Command Center</h2>
+</div>
+<div class="flex items-center gap-4">
+<div class="relative hidden sm:block">
+<span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-on-surface-variant text-sm">search</span>
+<input class="bg-surface-container-lowest text-sm text-on-surface placeholder:text-on-surface-variant/50 border-none rounded-DEFAULT pl-9 pr-4 py-1.5 focus:ring-1 focus:ring-primary focus:outline-none w-64 transition-all" placeholder="Search systems, logs..." type="text"/>
+</div>
+<button class="w-8 h-8 flex items-center justify-center text-[#c2c6d6] hover:bg-[#222a3d] transition-colors rounded-DEFAULT active:scale-95 duration-150">
+<span class="material-symbols-outlined text-[20px]">analytics</span>
+</button>
+<button class="w-8 h-8 flex items-center justify-center text-[#c2c6d6] hover:bg-[#222a3d] transition-colors rounded-DEFAULT active:scale-95 duration-150 relative">
+<span class="material-symbols-outlined text-[20px]">notifications</span>
+<span class="absolute top-1.5 right-1.5 w-1.5 h-1.5 bg-primary rounded-full"></span>
+</button>
+<button class="w-8 h-8 flex items-center justify-center text-[#c2c6d6] hover:bg-[#222a3d] transition-colors rounded-DEFAULT active:scale-95 duration-150 md:hidden">
+<span class="material-symbols-outlined text-[20px]">account_circle</span>
+</button>
+</div>
+</header>
+<!-- Scrollable Dashboard Content -->
+<main class="flex-1 overflow-y-auto p-4 md:p-8 z-10">
+<!-- Dashboard Header -->
+<div class="flex flex-col sm:flex-row sm:items-end justify-between gap-4 mb-8">
+<div>
+<h1 class="text-[2rem] font-headline font-bold text-on-surface tracking-tight mb-1">System Overview</h1>
+<p class="text-sm text-on-surface-variant font-body">Monitoring 12 active clusters across 3 regions.</p>
+</div>
+<div class="flex gap-3">
+<button class="px-4 py-2 bg-surface-container-highest text-on-surface text-sm font-medium rounded-lg border border-outline-variant/15 hover:bg-surface-bright transition-colors flex items-center gap-2">
+<span class="material-symbols-outlined text-[18px]">filter_list</span>
+                        Filter
+                    </button>
+<button class="px-4 py-2 bg-gradient-to-br from-primary to-primary-container text-on-primary text-sm font-medium rounded-lg hover:shadow-[0_0_15px_rgba(173,198,255,0.15)] transition-all flex items-center gap-2">
+<span class="material-symbols-outlined text-[18px]">add</span>
+                        Deploy Node
+                    </button>
+</div>
+</div>
+<!-- Asymmetrical Grid Layout -->
+<div class="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-6">
+<!-- Hero Metric Card (Spans 2 cols) -->
+<div class="col-span-1 md:col-span-2 lg:col-span-2 bg-surface-container-low rounded-xl p-6 relative overflow-hidden group">
+<div class="absolute top-0 right-0 w-32 h-32 bg-primary/5 rounded-full blur-[40px] -translate-y-1/2 translate-x-1/2"></div>
+<div class="flex justify-between items-start mb-6">
+<div>
+<div class="flex items-center gap-2 mb-1">
+<span class="w-2 h-2 rounded-full bg-primary animate-pulse"></span>
+<span class="text-xs font-mono text-primary tracking-wider uppercase">Global Uptime</span>
+</div>
+<h3 class="text-display-lg font-headline font-bold text-on-surface">99.98%</h3>
+</div>
+<div class="w-10 h-10 rounded-lg bg-surface-container-high flex items-center justify-center">
+<span class="material-symbols-outlined text-primary">monitoring</span>
+</div>
+</div>
+<div class="flex gap-4 items-end mt-4">
+<div class="flex-1 bg-surface-container-lowest h-16 rounded-lg p-2 flex items-end gap-1 relative overflow-hidden">
+<!-- Mock Sparkline Bars -->
+<div class="w-full h-[40%] bg-surface-container-high rounded-t-sm"></div>
+<div class="w-full h-[60%] bg-surface-container-high rounded-t-sm"></div>
+<div class="w-full h-[45%] bg-surface-container-high rounded-t-sm"></div>
+<div class="w-full h-[80%] bg-surface-container-high rounded-t-sm"></div>
+<div class="w-full h-[70%] bg-surface-container-high rounded-t-sm"></div>
+<div class="w-full h-[95%] bg-primary/40 rounded-t-sm"></div>
+<div class="w-full h-[90%] bg-primary/60 rounded-t-sm"></div>
+<div class="w-full h-[100%] bg-primary rounded-t-sm"></div>
+</div>
+<div class="text-right pb-1">
+<p class="text-xs text-on-surface-variant font-label mb-1">vs Last 24h</p>
+<p class="text-sm text-secondary font-medium flex items-center gap-1 justify-end">
+<span class="material-symbols-outlined text-[14px]">arrow_upward</span>
+                                0.02%
+                            </p>
+</div>
+</div>
+</div>
+<!-- Secondary Metric -->
+<div class="col-span-1 md:col-span-1 lg:col-span-1 bg-surface-container-low rounded-xl p-6">
+<div class="flex items-center gap-2 mb-4">
+<span class="material-symbols-outlined text-tertiary text-sm">warning</span>
+<span class="text-xs font-mono text-tertiary tracking-wider uppercase">Avg Latency</span>
+</div>
+<div class="mb-4">
+<span class="text-3xl font-headline font-bold text-on-surface">142</span>
+<span class="text-sm text-on-surface-variant ml-1">ms</span>
+</div>
+<div class="w-full bg-surface-container-lowest h-1.5 rounded-full overflow-hidden">
+<div class="h-full bg-tertiary w-[65%] rounded-full"></div>
+</div>
+<p class="text-xs text-on-surface-variant mt-3 font-label">US-East-1 experiencing minor delays</p>
+</div>
+<!-- Alerts Summary -->
+<div class="col-span-1 md:col-span-3 lg:col-span-1 bg-surface-container-low rounded-xl p-6 border border-error/10">
+<div class="flex items-center justify-between mb-4">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-error text-sm">error</span>
+<span class="text-xs font-mono text-error tracking-wider uppercase">Active Alerts</span>
+</div>
+<span class="px-2 py-0.5 bg-error-container text-on-error-container text-[10px] font-bold rounded-full">2</span>
+</div>
+<ul class="space-y-3">
+<li class="bg-surface-container-lowest p-3 rounded-lg border border-outline-variant/15">
+<p class="text-xs text-on-surface font-medium mb-1 truncate">DB-Replica Sync Failed</p>
+<p class="text-[10px] text-on-surface-variant font-mono">10 mins ago • Cluster-B</p>
+</li>
+<li class="bg-surface-container-lowest p-3 rounded-lg border border-outline-variant/15">
+<p class="text-xs text-on-surface font-medium mb-1 truncate">High Memory Usage</p>
+<p class="text-[10px] text-on-surface-variant font-mono">22 mins ago • Cache-Node-04</p>
+</li>
+</ul>
+</div>
+</div>
+<!-- Dynamic System Cards Grid -->
+<div class="mt-8">
+<div class="flex items-center justify-between mb-4">
+<h2 class="text-xl font-headline font-semibold text-on-surface">Active Systems</h2>
+<div class="flex gap-2">
+<button class="w-8 h-8 bg-surface-container-high rounded-lg flex items-center justify-center text-primary border border-outline-variant/15"><span class="material-symbols-outlined text-sm">grid_view</span></button>
+<button class="w-8 h-8 bg-transparent hover:bg-surface-container-low rounded-lg flex items-center justify-center text-on-surface-variant"><span class="material-symbols-outlined text-sm">view_list</span></button>
+</div>
+</div>
+<div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
+<!-- Card 1: Healthy -->
+<div class="bg-surface-container-low rounded-lg p-5 hover:bg-surface-container-high transition-colors border border-transparent hover:border-outline-variant/15 group relative overflow-hidden">
+<div class="absolute top-0 right-0 w-16 h-16 bg-primary/5 rounded-bl-full pointer-events-none"></div>
+<div class="flex justify-between items-start mb-3">
+<div>
+<h3 class="text-base font-headline font-semibold text-on-surface mb-0.5">Auth Service</h3>
+<p class="text-[11px] text-on-surface-variant font-mono">Microservice • v2.4.1</p>
+</div>
+<span class="flex h-3 w-3 relative">
+<span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-primary opacity-20"></span>
+<span class="relative inline-flex rounded-full h-3 w-3 bg-primary"></span>
+</span>
+</div>
+<div class="space-y-3 mt-4">
+<div class="flex justify-between items-center text-sm">
+<span class="text-on-surface-variant font-label text-xs">Connectivity</span>
+<span class="text-secondary font-mono text-xs flex items-center gap-1"><span class="material-symbols-outlined text-[12px]">link</span> Stable</span>
+</div>
+<div class="flex justify-between items-center text-sm">
+<span class="text-on-surface-variant font-label text-xs">Last Heartbeat</span>
+<span class="text-on-surface font-mono text-xs">2s ago</span>
+</div>
+<div class="pt-3 mt-3 border-t border-outline-variant/15 flex justify-between items-end">
+<div>
+<p class="text-[10px] text-on-surface-variant uppercase tracking-wider mb-0.5">Active Users</p>
+<p class="text-lg font-headline font-medium text-on-surface">1.2k</p>
+</div>
+<button class="text-primary hover:text-primary-container text-xs font-medium flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
+                                    Details <span class="material-symbols-outlined text-[14px]">arrow_forward</span>
+</button>
+</div>
+</div>
+</div>
+<!-- Card 2: Warning -->
+<div class="bg-surface-container-low rounded-lg p-5 hover:bg-surface-container-high transition-colors border border-tertiary/20 relative overflow-hidden group">
+<div class="absolute top-0 right-0 w-16 h-16 bg-tertiary/10 rounded-bl-full pointer-events-none"></div>
+<div class="flex justify-between items-start mb-3">
+<div>
+<h3 class="text-base font-headline font-semibold text-on-surface mb-0.5">Payment Gateway</h3>
+<p class="text-[11px] text-on-surface-variant font-mono">External API • Stripe</p>
+</div>
+<span class="flex h-3 w-3 relative">
+<span class="relative inline-flex rounded-full h-3 w-3 bg-tertiary"></span>
+</span>
+</div>
+<div class="space-y-3 mt-4">
+<div class="flex justify-between items-center text-sm">
+<span class="text-on-surface-variant font-label text-xs">Connectivity</span>
+<span class="text-tertiary font-mono text-xs flex items-center gap-1"><span class="material-symbols-outlined text-[12px]">warning</span> Degraded</span>
+</div>
+<div class="flex justify-between items-center text-sm">
+<span class="text-on-surface-variant font-label text-xs">Last Heartbeat</span>
+<span class="text-on-surface font-mono text-xs">15s ago</span>
+</div>
+<div class="pt-3 mt-3 border-t border-outline-variant/15 flex justify-between items-end">
+<div>
+<p class="text-[10px] text-on-surface-variant uppercase tracking-wider mb-0.5">Queue Size</p>
+<p class="text-lg font-headline font-medium text-tertiary">450</p>
+</div>
+<button class="text-tertiary hover:text-tertiary-container text-xs font-medium flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
+                                    View Logs <span class="material-symbols-outlined text-[14px]">arrow_forward</span>
+</button>
+</div>
+</div>
+</div>
+<!-- Card 3: Healthy -->
+<div class="bg-surface-container-low rounded-lg p-5 hover:bg-surface-container-high transition-colors border border-transparent hover:border-outline-variant/15 group relative overflow-hidden">
+<div class="flex justify-between items-start mb-3">
+<div>
+<h3 class="text-base font-headline font-semibold text-on-surface mb-0.5">User DB Master</h3>
+<p class="text-[11px] text-on-surface-variant font-mono">PostgreSQL • v14</p>
+</div>
+<span class="flex h-3 w-3 relative">
+<span class="relative inline-flex rounded-full h-3 w-3 bg-secondary-container"></span>
+</span>
+</div>
+<div class="space-y-3 mt-4">
+<div class="flex justify-between items-center text-sm">
+<span class="text-on-surface-variant font-label text-xs">Connectivity</span>
+<span class="text-secondary-container font-mono text-xs flex items-center gap-1"><span class="material-symbols-outlined text-[12px]">check_circle</span> Optimal</span>
+</div>
+<div class="flex justify-between items-center text-sm">
+<span class="text-on-surface-variant font-label text-xs">Last Heartbeat</span>
+<span class="text-on-surface font-mono text-xs">1s ago</span>
+</div>
+<div class="pt-3 mt-3 border-t border-outline-variant/15 flex justify-between items-end">
+<div>
+<p class="text-[10px] text-on-surface-variant uppercase tracking-wider mb-0.5">IOPS</p>
+<p class="text-lg font-headline font-medium text-on-surface">3.4k</p>
+</div>
+<button class="text-primary hover:text-primary-container text-xs font-medium flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
+                                    Metrics <span class="material-symbols-outlined text-[14px]">arrow_forward</span>
+</button>
+</div>
+</div>
+</div>
+<!-- Card 4: Error -->
+<div class="bg-surface-container-lowest rounded-lg p-5 border border-error/30 relative overflow-hidden group">
+<div class="absolute inset-0 bg-error/5 pointer-events-none"></div>
+<div class="flex justify-between items-start mb-3 relative z-10">
+<div>
+<h3 class="text-base font-headline font-semibold text-error mb-0.5">Worker Node 03</h3>
+<p class="text-[11px] text-on-surface-variant font-mono">EC2 Instance • t3.large</p>
+</div>
+<span class="flex h-3 w-3 relative">
+<span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-error opacity-40"></span>
+<span class="relative inline-flex rounded-full h-3 w-3 bg-error"></span>
+</span>
+</div>
+<div class="space-y-3 mt-4 relative z-10">
+<div class="flex justify-between items-center text-sm">
+<span class="text-on-surface-variant font-label text-xs">Connectivity</span>
+<span class="text-error font-mono text-xs flex items-center gap-1"><span class="material-symbols-outlined text-[12px]">cloud_off</span> Offline</span>
+</div>
+<div class="flex justify-between items-center text-sm">
+<span class="text-on-surface-variant font-label text-xs">Last Heartbeat</span>
+<span class="text-error font-mono text-xs">4m 12s ago</span>
+</div>
+<div class="pt-3 mt-3 border-t border-error/20 flex justify-between items-end">
+<div>
+<p class="text-[10px] text-error uppercase tracking-wider mb-0.5">CPU Load</p>
+<p class="text-lg font-headline font-medium text-error">100%</p>
+</div>
+<button class="bg-error-container text-on-error-container px-2 py-1 rounded text-[10px] font-bold uppercase tracking-wide hover:bg-error transition-colors">
+                                    Reboot
+                                </button>
+</div>
+</div>
+</div>
+</div>
+</div>
+<!-- Terminal / Log Stream Preview (Bottom Span) -->
+<div class="mt-8 bg-surface-container-lowest rounded-xl p-6 border border-outline-variant/15 flex flex-col min-h-[200px]">
+<div class="flex items-center justify-between mb-4 pb-4 border-b border-outline-variant/15">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-on-surface-variant text-sm">terminal</span>
+<h3 class="text-sm font-mono font-medium text-on-surface">Global Event Stream</h3>
+</div>
+<div class="flex items-center gap-3">
+<span class="flex items-center gap-1 text-[10px] font-mono text-primary"><span class="w-1.5 h-1.5 rounded-full bg-primary inline-block"></span> Live</span>
+<button class="text-on-surface-variant hover:text-on-surface"><span class="material-symbols-outlined text-sm">open_in_full</span></button>
+</div>
+</div>
+<div class="flex-1 font-mono text-xs space-y-2 overflow-hidden relative">
+<div class="absolute bottom-0 left-0 right-0 h-12 bg-gradient-to-t from-surface-container-lowest to-transparent z-10 pointer-events-none"></div>
+<p class="text-on-surface-variant"><span class="text-outline-variant mr-2">[14:32:01]</span> <span class="text-secondary">INFO</span>  Auth Service: JWT token rotated successfully.</p>
+<p class="text-on-surface-variant"><span class="text-outline-variant mr-2">[14:32:05]</span> <span class="text-secondary">INFO</span>  User DB Master: Checkpoint complete.</p>
+<p class="text-tertiary"><span class="text-outline-variant mr-2">[14:32:18]</span> WARN  Payment Gateway: Latency spike detected (450ms).</p>
+<p class="text-error"><span class="text-outline-variant mr-2">[14:32:22]</span> CRIT  Worker Node 03: Connection lost. Initiating failover protocol.</p>
+<p class="text-on-surface-variant opacity-50"><span class="text-outline-variant mr-2">[14:32:25]</span> <span class="text-secondary">INFO</span>  Load Balancer: Rerouting traffic from Node 03...</p>
+</div>
+</div>
+</main>
+</div>
+<!-- Mobile Bottom Nav (Visible only on sm, hidden on md) -->
+<nav class="md:hidden fixed bottom-0 left-0 w-full bg-surface-container border-t border-outline-variant/15 flex justify-around items-center h-16 z-50">
+<button class="flex flex-col items-center justify-center w-full h-full text-primary">
+<span class="material-symbols-outlined text-xl mb-1 fill">dashboard</span>
+<span class="text-[10px] font-medium">Overview</span>
+</button>
+<button class="flex flex-col items-center justify-center w-full h-full text-on-surface-variant hover:text-on-surface transition-colors">
+<span class="material-symbols-outlined text-xl mb-1">dns</span>
+<span class="text-[10px] font-medium">Systems</span>
+</button>
+<button class="flex flex-col items-center justify-center w-full h-full text-on-surface-variant hover:text-on-surface transition-colors">
+<span class="material-symbols-outlined text-xl mb-1">terminal</span>
+<span class="text-[10px] font-medium">Logs</span>
+</button>
+<button class="flex flex-col items-center justify-center w-full h-full text-on-surface-variant hover:text-on-surface transition-colors">
+<span class="material-symbols-outlined text-xl mb-1">settings</span>
+<span class="text-[10px] font-medium">Settings</span>
+</button>
+</nav>
+</body></html>

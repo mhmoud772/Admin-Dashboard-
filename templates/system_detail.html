@@ -1,0 +1,166 @@
+{% extends "base.html" %}
+
+{% block header_title %}التفاصيل : {{ system.name }}{% endblock %}
+
+{% block content %}
+<div class="flex flex-col sm:flex-row sm:items-end justify-between gap-4 mb-4">
+    <div>
+        <h1 class="text-[2rem] font-headline font-bold text-on-surface tracking-tight mb-1">{{ system.name }}</h1>
+        <p class="text-sm text-on-surface-variant font-mono">{{ system.api_url }}</p>
+    </div>
+    
+    <div class="flex gap-3">
+        <button onclick="performAction('إيقاف')" class="px-4 py-2 bg-surface-container-highest text-tertiary text-sm font-medium rounded-lg border border-outline-variant/15 hover:bg-surface-bright transition-colors flex items-center gap-2">
+            <span class="material-symbols-outlined text-[18px]">stop_circle</span> إيقاف
+        </button>
+        <button onclick="performAction('تشغيل')" class="px-4 py-2 bg-gradient-to-br from-primary to-primary-container text-on-primary text-sm font-medium rounded-lg transition-all flex items-center gap-2">
+            <span class="material-symbols-outlined text-[18px]">play_circle</span> تشغيل
+        </button>
+        <button onclick="performAction('إعادة تشغيل')" class="px-4 py-2 bg-surface-container-highest text-on-surface text-sm font-medium rounded-lg border border-outline-variant/15 hover:bg-surface-bright transition-colors flex items-center gap-2">
+            <span class="material-symbols-outlined text-[18px]">restart_alt</span> إعادة تشغيل
+        </button>
+    </div>
+</div>
+
+<div class="flex items-center gap-2 mb-8">
+    <span class="text-xs font-label bg-surface-container text-on-surface-variant px-2 py-1 rounded">النوع: {{ system.system_type }}</span>
+    <span id="health-badge" class="text-xs font-label text-on-surface px-2 py-1 rounded border border-outline-variant/30 flex items-center gap-1">
+        جاري التحقق...
+    </span>
+</div>
+
+<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+    <div class="bg-surface-container-low rounded-xl p-6 border border-outline-variant/15">
+        <div class="flex items-center gap-2 mb-4">
+            <span class="material-symbols-outlined text-primary text-sm">group</span>
+            <span class="text-xs font-mono text-primary tracking-wider">المستخدمين النشطين</span>
+        </div>
+        <div class="mb-4">
+            <span id="stat-active_users" class="text-3xl font-headline font-bold text-on-surface">--</span>
+        </div>
+    </div>
+
+    <div class="bg-surface-container-low rounded-xl p-6 border border-outline-variant/15">
+        <div class="flex items-center gap-2 mb-4">
+            <span class="material-symbols-outlined text-tertiary text-sm">queue</span>
+            <span class="text-xs font-mono text-tertiary tracking-wider">حجم الطابور (Queue)</span>
+        </div>
+        <div class="mb-4">
+            <span id="stat-queue_size" class="text-3xl font-headline font-bold text-on-surface">--</span>
+        </div>
+    </div>
+    
+    <div class="bg-surface-container-low rounded-xl p-6 border border-outline-variant/15">
+        <div class="flex items-center gap-2 mb-4">
+            <span class="material-symbols-outlined text-error text-sm">memory</span>
+            <span class="text-xs font-mono text-error tracking-wider">استهلاك المعالج</span>
+        </div>
+        <div class="mb-4">
+            <span id="stat-cpu_load" class="text-3xl font-headline font-bold text-on-surface">--</span>
+        </div>
+    </div>
+
+    <div class="bg-surface-container-low rounded-xl p-6 border border-outline-variant/15">
+        <div class="flex items-center gap-2 mb-4">
+            <span class="material-symbols-outlined text-secondary text-sm">storage</span>
+            <span class="text-xs font-mono text-secondary tracking-wider">استهلاك الذاكرة</span>
+        </div>
+        <div class="mb-4">
+            <span id="stat-memory_usage" class="text-3xl font-headline font-bold text-on-surface">--</span>
+        </div>
+    </div>
+</div>
+
+<div class="mt-8 bg-surface-container-lowest rounded-xl p-6 border border-outline-variant/15 flex flex-col min-h-[300px]">
+    <div class="flex items-center justify-between mb-4 pb-4 border-b border-outline-variant/15">
+        <div class="flex items-center gap-2">
+            <span class="material-symbols-outlined text-on-surface-variant text-sm">terminal</span>
+            <h3 class="text-sm font-mono font-medium text-on-surface">سجل الأحداث الخاص بالنظام</h3>
+        </div>
+        <span class="flex items-center gap-1 text-[10px] font-mono text-primary"><span class="w-1.5 h-1.5 rounded-full bg-primary inline-block animate-pulse"></span> مبـاشر</span>
+    </div>
+    <div id="logs-container" class="flex-1 font-mono text-xs space-y-2 overflow-hidden relative dir-ltr" style="direction: ltr;">
+        <div class="absolute bottom-0 left-0 right-0 h-12 bg-gradient-to-t from-surface-container-lowest to-transparent z-10 pointer-events-none"></div>
+        <p class="text-on-surface-variant text-center opacity-50 mt-10">جاري تحميل السجلات...</p>
+    </div>
+</div>
+
+{% endblock %}
+
+{% block scripts %}
+<script>
+    async function performAction(action) {
+        if(!confirm(`هل أنت متأكد من تنفيذ إجراء '${action}' على هذا النظام؟`)) return;
+        
+        try {
+            const res = await fetch(`/api/systems/{{ system.id }}/action`, {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ action: action })
+            });
+            const data = await res.json();
+            if (data.error) {
+                alert("خطأ: " + data.error);
+            } else {
+                alert("نجاح: " + (data.message || "تم تنفيذ الأمر."));
+            }
+        } catch(e) {
+            alert("حدث خطأ أثناء الاتصال بالنظام.");
+        }
+    }
+
+    async function fetchDetails() {
+        // Health
+        try {
+            const hRes = await fetch(`/api/systems/{{ system.id }}/health`);
+            const hData = await hRes.json();
+            const badge = document.getElementById("health-badge");
+            
+            if(hData.status === "optimal") {
+                badge.className = "text-xs font-label bg-secondary-container/20 text-secondary-container px-2 py-1 rounded border border-secondary-container/50 flex items-center gap-1";
+                badge.innerHTML = `<span class="material-symbols-outlined text-[14px]">check_circle</span> متصل (${hData.latency_ms}ms)`;
+            } else if(hData.status === "degraded") {
+                badge.className = "text-xs font-label bg-tertiary/20 text-tertiary px-2 py-1 rounded border border-tertiary/50 flex items-center gap-1";
+                badge.innerHTML = `<span class="material-symbols-outlined text-[14px]">warning</span> أداء منخفض (${hData.latency_ms}ms)`;
+            } else {
+                badge.className = "text-xs font-label bg-error/20 text-error px-2 py-1 rounded border border-error/50 flex items-center gap-1";
+                badge.innerHTML = `<span class="material-symbols-outlined text-[14px]">cloud_off</span> غير متصل`;
+            }
+        } catch(e) { }
+
+        // Stats
+        try {
+            const sRes = await fetch(`/api/systems/{{ system.id }}/stats`);
+            const sData = await sRes.json();
+            document.getElementById("stat-active_users").innerText = sData.active_users || "--";
+            document.getElementById("stat-queue_size").innerText = sData.queue_size || "--";
+            document.getElementById("stat-cpu_load").innerText = sData.cpu_load || "--";
+            document.getElementById("stat-memory_usage").innerText = sData.memory_usage || "--";
+        } catch(e) {}
+
+        // Logs
+        try {
+            const lRes = await fetch(`/api/systems/{{ system.id }}/logs`);
+            const lData = await lRes.json();
+            const container = document.getElementById("logs-container");
+            
+            if(lData.logs && lData.logs.length > 0) {
+                container.innerHTML = `<div class="absolute bottom-0 left-0 right-0 h-12 bg-gradient-to-t from-surface-container-lowest to-transparent z-10 pointer-events-none"></div>`;
+                lData.logs.forEach(log => {
+                    let levelClass = "text-on-surface-variant";
+                    if(log.level === "ERROR" || log.level === "CRIT") levelClass = "text-error";
+                    else if(log.level === "WARN") levelClass = "text-tertiary";
+                    else if(log.level === "INFO") levelClass = "text-secondary";
+                    
+                    container.innerHTML += `<p class="${levelClass} text-left"><span class="text-outline-variant mr-2">[${log.timestamp}]</span> <span class="font-bold mr-2">${log.level}</span> ${log.message}</p>`;
+                });
+            } else if (!container.innerHTML.includes("</div>")) {
+                container.innerHTML = `<p class="text-on-surface-variant text-center opacity-50 mt-10">لا توجد سجلات.</p>`;
+            }
+        } catch(e) {}
+    }
+
+    fetchDetails();
+    setInterval(fetchDetails, 5000);
+</script>
+{% endblock %}

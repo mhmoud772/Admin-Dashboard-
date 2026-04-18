@@ -1,0 +1,65 @@
+{% extends "base.html" %}
+
+{% block header_title %}إدارة الأنظمة{% endblock %}
+
+{% block content %}
+<div class="mb-8">
+    <h1 class="text-[2rem] font-headline font-bold text-on-surface tracking-tight mb-4">إضافة وحذف الأنظمة</h1>
+</div>
+
+<div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+    <!-- Form to Add System -->
+    <div class="bg-surface-container-low rounded-xl p-6 border border-outline-variant/15">
+        <h2 class="text-xl font-headline font-semibold text-primary mb-4 flex items-center gap-2">
+            <span class="material-symbols-outlined">add_circle</span> تسجيل نظام جديد
+        </h2>
+        
+        <form action="/systems/add" method="POST" class="space-y-4">
+            <div>
+                <label class="block text-sm font-label text-on-surface-variant mb-1">اسم النظام</label>
+                <input required type="text" name="name" placeholder="مثال: خدمة المدفوعات" class="w-full bg-surface-container-lowest text-sm text-on-surface border border-outline-variant/30 rounded focus:ring-1 focus:ring-primary focus:outline-none px-4 py-2">
+            </div>
+            <div>
+                <label class="block text-sm font-label text-on-surface-variant mb-1">رابط API الأساسي</label>
+                <input required type="url" name="api_url" placeholder="http://localhost:8001" class="w-full bg-surface-container-lowest text-sm text-on-surface font-mono border border-outline-variant/30 rounded focus:ring-1 focus:ring-primary focus:outline-none px-4 py-2 dir-ltr">
+            </div>
+            <div>
+                <label class="block text-sm font-label text-on-surface-variant mb-1">نوع النظام</label>
+                <select name="system_type" class="w-full bg-surface-container-lowest text-sm text-on-surface border border-outline-variant/30 rounded focus:ring-1 focus:ring-primary focus:outline-none px-4 py-2">
+                    <option value="Microservice">Microservice</option>
+                    <option value="Database">Database</option>
+                    <option value="External API">External API</option>
+                    <option value="Cache Node">Cache Node</option>
+                </select>
+            </div>
+            <button type="submit" class="w-full py-2 bg-gradient-to-br from-primary to-primary-container text-on-primary rounded-lg font-medium text-sm hover:shadow-[0_0_15px_rgba(173,198,255,0.15)] transition-all">
+                إضافة
+            </button>
+        </form>
+    </div>
+
+    <!-- List of Systems to Delete -->
+    <div class="bg-surface-container-low rounded-xl p-6 border border-outline-variant/15">
+        <h2 class="text-xl font-headline font-semibold text-on-surface mb-4 flex items-center gap-2">
+            <span class="material-symbols-outlined">list</span> الأنظمة المسجلة
+        </h2>
+        <ul class="space-y-3">
+            {% for system in systems %}
+            <li class="bg-surface-container-lowest p-3 rounded-lg border border-outline-variant/15 flex justify-between items-center">
+                <div>
+                    <p class="text-sm font-headline text-on-surface mb-0.5">{{ system.name }}</p>
+                    <p class="text-[10px] text-on-surface-variant font-mono">{{ system.api_url }}</p>
+                </div>
+                <form action="/systems/{{ system.id }}/delete" method="POST">
+                    <button type="submit" class="w-8 h-8 flex items-center justify-center text-error hover:bg-error/10 hover:text-error-container rounded-lg transition-colors">
+                        <span class="material-symbols-outlined text-[18px]">delete</span>
+                    </button>
+                </form>
+            </li>
+            {% else %}
+            <p class="text-sm border border-dashed border-outline-variant/30 p-4 rounded text-center text-on-surface-variant">لا توجد أنظمة. أضف نظاماً للبدء.</p>
+            {% endfor %}
+        </ul>
+    </div>
+</div>
+{% endblock %}

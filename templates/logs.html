@@ -1,0 +1,57 @@
+{% extends "base.html" %}
+
+{% block header_title %}السجلات الموحدة (Logs){% endblock %}
+
+{% block content %}
+<div class="mb-8 flex flex-col sm:flex-row justify-between sm:items-end gap-4">
+    <div>
+        <h1 class="text-[2rem] font-headline font-bold text-on-surface tracking-tight mb-1">تدفق الأحداث العالمي</h1>
+        <p class="text-sm text-on-surface-variant font-body">يتم تجميع وعرض السجلات الحية من جميع الأنظمة ({{ systems|length }} مسجلة).</p>
+    </div>
+</div>
+
+<div class="bg-surface-container-lowest rounded-xl p-6 border border-outline-variant/15 flex flex-col min-h-[500px]">
+    <div class="flex items-center justify-between mb-4 pb-4 border-b border-outline-variant/15">
+        <div class="flex items-center gap-2">
+            <span class="material-symbols-outlined text-on-surface-variant text-sm">terminal</span>
+            <h3 class="text-sm font-mono font-medium text-on-surface">Live Event Stream (All Nodes)</h3>
+        </div>
+        <div class="flex items-center gap-3">
+            <span class="flex items-center gap-1 text-[10px] font-mono text-primary"><span class="w-1.5 h-1.5 rounded-full bg-primary inline-block animate-pulse"></span> مبـاشر</span>
+        </div>
+    </div>
+    
+    <div id="global-logs-container" class="flex-1 font-mono text-xs space-y-3 overflow-y-auto relative dir-ltr" style="direction: ltr;">
+        <p class="text-on-surface-variant text-center opacity-50 mt-10">جاري تحميل السجلات الموحدة...</p>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+    async function fetchAllLogs() {
+        try {
+            const res = await fetch(`/api/systems/all/logs`);
+            const logs = await res.json();
+            const container = document.getElementById("global-logs-container");
+            
+            if(logs && logs.length > 0) {
+                container.innerHTML = "";
+                logs.forEach(log => {
+                    let levelClass = "text-on-surface-variant";
+                    if(log.level === "ERROR" || log.level === "CRIT") levelClass = "text-error";
+                    else if(log.level === "WARN") levelClass = "text-tertiary";
+                    else if(log.level === "INFO") levelClass = "text-secondary";
+                    
+                    container.innerHTML += `<p class="${levelClass} text-left"><span class="text-outline-variant mr-2">[${log.timestamp}]</span> <span class="bg-surface-container-high px-1 py-0.5 rounded text-[10px] text-primary inline-block mr-2 w-24 truncate text-center">${log.system}</span> <span class="font-bold mr-2">${log.level}</span> ${log.message}</p>`;
+                });
+            } else {
+                container.innerHTML = `<p class="text-on-surface-variant text-center opacity-50 mt-10">لا توجد سجلات حالياً.</p>`;
+            }
+        } catch(e) { }
+    }
+
+    fetchAllLogs();
+    setInterval(fetchAllLogs, 5000);
+</script>
+{% endblock %}

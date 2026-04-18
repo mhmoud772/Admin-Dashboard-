@@ -1,0 +1,104 @@
+{% extends "base.html" %}
+
+{% block header_title %}نظرة عامة على الأنظمة{% endblock %}
+
+{% block content %}
+<div class="flex flex-col sm:flex-row sm:items-end justify-between gap-4 mb-8">
+    <div>
+        <h1 class="text-[2rem] font-headline font-bold text-on-surface tracking-tight mb-1">الأنظمة النشطة</h1>
+        <p class="text-sm text-on-surface-variant font-body">مراقبة {{ systems|length }} أنظمة مسجلة.</p>
+    </div>
+</div>
+
+<div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
+    {% for system in systems %}
+    <div id="card-{{ system.id }}" class="bg-surface-container-low rounded-lg p-5 hover:bg-surface-container-high transition-colors border border-transparent group relative overflow-hidden">
+        <div class="absolute top-0 right-0 w-16 h-16 bg-primary/5 rounded-bl-full pointer-events-none"></div>
+        <div class="flex justify-between items-start mb-3">
+            <div>
+                <a href="/systems/{{ system.id }}" class="text-base font-headline font-semibold text-on-surface mb-0.5 hover:underline">{{ system.name }}</a>
+                <p class="text-[11px] text-on-surface-variant font-mono">{{ system.system_type }}</p>
+            </div>
+            <span class="flex h-3 w-3 relative">
+                <span id="ping-{{ system.id }}" class="animate-ping absolute inline-flex h-full w-full rounded-full opacity-20 bg-outline-variant"></span>
+                <span id="dot-{{ system.id }}" class="relative inline-flex rounded-full h-3 w-3 bg-outline-variant"></span>
+            </span>
+        </div>
+        
+        <div class="space-y-3 mt-4">
+            <div class="flex justify-between items-center text-sm">
+                <span class="text-on-surface-variant font-label text-xs">حالة الاتصال</span>
+                <span id="status-{{ system.id }}" class="font-mono text-xs flex items-center gap-1 text-on-surface-variant">جارٍ التحقق...</span>
+            </div>
+            
+            <div class="pt-3 mt-3 border-t border-outline-variant/15 flex justify-between items-end">
+                <div>
+                    <p class="text-[10px] text-on-surface-variant tracking-wider mb-0.5">زمن الاستجابة</p>
+                    <p id="latency-{{ system.id }}" class="text-lg font-headline font-medium text-on-surface">--</p>
+                </div>
+                <a href="/systems/{{ system.id }}" class="text-primary hover:text-primary-container text-xs font-medium flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
+                    التفاصيل <span class="material-symbols-outlined text-[14px]">arrow_back</span>
+                </a>
+            </div>
+        </div>
+    </div>
+    {% else %}
+    <div class="col-span-1 sm:col-span-2 lg:col-span-3 xl:col-span-4 bg-surface-container-low rounded-lg p-8 text-center text-on-surface-variant">
+        أنت لم تقم بإضافة أي أنظمة بعد. <a href="/systems" class="text-primary underline">أضف نظاماً جديداً</a> للبدء.
+    </div>
+    {% endfor %}
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+    async function checkHealth(systemId) {
+        try {
+            const response = await fetch(`/api/systems/${systemId}/health`);
+            const data = await response.json();
+            
+            const card = document.getElementById(`card-${systemId}`);
+            const dot = document.getElementById(`dot-${systemId}`);
+            const ping = document.getElementById(`ping-${systemId}`);
+            const statusText = document.getElementById(`status-${systemId}`);
+            const latencyData = document.getElementById(`latency-${systemId}`);
+            
+            if (data.status === "optimal") {
+                dot.className = "relative inline-flex rounded-full h-3 w-3 bg-secondary-container";
+                ping.className = "animate-ping absolute inline-flex h-full w-full rounded-full opacity-20 bg-secondary-container";
+                statusText.innerHTML = `<span class="material-symbols-outlined text-[12px]">check_circle</span> متصل`;
+                statusText.className = "font-mono text-xs flex items-center gap-1 text-secondary-container";
+                card.className = "bg-surface-container-low rounded-lg p-5 border border-transparent group relative overflow-hidden";
+            } else if (data.status === "degraded") {
+                dot.className = "relative inline-flex rounded-full h-3 w-3 bg-tertiary";
+                ping.className = "animate-ping absolute inline-flex h-full w-full rounded-full opacity-20 bg-tertiary";
+                statusText.innerHTML = `<span class="material-symbols-outlined text-[12px]">warning</span> متأخر`;
+                statusText.className = "font-mono text-xs flex items-center gap-1 text-tertiary";
+                card.className = "bg-surface-container-low rounded-lg p-5 border border-tertiary/20 relative overflow-hidden group";
+            } else {
+                dot.className = "relative inline-flex rounded-full h-3 w-3 bg-error";
+                ping.className = "animate-ping absolute inline-flex h-full w-full rounded-full opacity-40 bg-error";
+                statusText.innerHTML = `<span class="material-symbols-outlined text-[12px]">cloud_off</span> غير متصل`;
+                statusText.className = "font-mono text-xs flex items-center gap-1 text-error";
+                card.className = "bg-surface-container-lowest rounded-lg p-5 border border-error/30 relative overflow-hidden group";
+            }
+            
+            if (data.latency_ms) {
+                latencyData.innerText = `${data.latency_ms}ms`;
+            } else {
+                latencyData.innerText = "N/A";
+            }
+        } catch (error) {
+            console.error("Health check failed:", error);
+            document.getElementById(`status-${systemId}`).innerText = "فشل الاتصال";
+            document.getElementById(`dot-${systemId}`).className = "relative inline-flex rounded-full h-3 w-3 bg-error";
+        }
+    }
+
+    {% for system in systems %}
+        checkHealth({{ system.id }});
+        // check every 10 seconds
+        setInterval(() => checkHealth({{ system.id }}), 10000);
+    {% endfor %}
+</script>
+{% endblock %}
